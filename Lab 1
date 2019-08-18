@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h> 
+#include <time.h>
+int division(int dividend, int divisor);
+
+int main ()
+{
+	srand((int)time(NULL));
+	int dividend; 
+	int divisor; 
+	int quotient;  
+	int userI; //user inputted answer
+	int i; 
+	int right=0; 
+	for (i=0; i<10; i++)
+	{
+		divisor= rand()%12+1;
+		quotient=rand()%13;
+		dividend=divisor*quotient; 
+		printf("%d / %d\n", dividend, divisor);
+		printf("Enter the quotient:");
+		right+= division(dividend,divisor);
+		
+	}
+	printf("Total correct:%d\n", right);
+}
+int division(int dividend, int divisor)
+{		
+	int userI;
+	scanf("%d",&userI);
+	int quotient= dividend/divisor;
+
+		if (userI==quotient) 
+		{
+			printf("Yes, that is correct!\n");
+			return 1;
+		}
+		else 
+		{
+			printf("Nope, that's wrong! The correct answer is %d\n", quotient);
+			return 0;
+		}
+	
+}
+
