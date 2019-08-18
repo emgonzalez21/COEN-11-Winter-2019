@@ -1,0 +1,181 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h> 
+
+#define SIZE 10
+#define LENGTH 20
+
+#define NODE  struct node 
+void insert(); 
+void removef (); 
+void list (); 
+void search_size();
+int check_duplicate(char *Gname);
+
+struct node
+{
+	char name[SIZE];
+	int size;
+	NODE *next;
+};
+
+NODE *head=NULL;
+NODE*tail=NULL; 
+int main (void) 
+{
+	int input;
+	while (1) 
+	{
+		printf("Welcome to Martha's Kitchen\n");
+		printf("1:Add name to waiting list\n2:Opening\n3:Show waiting list\n4:Show size\n0:Quit\n");
+		scanf("%d", &input); 
+		switch (input) 
+		{
+		
+			case 1://add name to waiting list
+				insert ();
+				break;	
+			case 2: //Open table available 
+				removef (); 
+				break;	
+			case 3://show the waiting list
+				list ();
+				break;
+			case 4://show size
+				search_size();
+				break;				
+			case 0: //quit	
+				return (0);							
+				break;	
+			default: 
+				printf("Invalid input, try entering a valid option\n");	
+		}
+	
+	}		
+}
+void insert () 
+{	  
+	char tempoName[LENGTH];
+	int num; 
+	
+	NODE*temp;
+	temp=(NODE *)malloc (sizeof(NODE)); 
+	if (head==NULL)//list is empty
+	{
+		head=tail=temp;
+		temp->next=NULL; 
+	}
+	if (tail!=NULL)//list is not empty
+	{
+		tail->next=temp; 
+		tail=temp; 
+		tail->next=NULL; 
+	}
+	printf("Enter name:");
+	scanf("%s", tempoName);
+	printf("Size of party:");
+	scanf("%d", &num); 
+
+	if (check_duplicate(tempoName)==1)
+	{
+		printf("%s, party of %d, you are now on the waiting list\n", tempoName,num);
+		strcpy(temp->name, tempoName);
+		temp->size=num;
+	
+	}		
+}
+
+void removef()	 
+{
+	NODE *p,*q;
+	int tempSize; 
+	int flag=0;
+	
+	p=q=head; 
+
+		
+	printf("Available table for party size of:"); 
+	scanf("%d", &tempSize);
+		
+	while (p!=NULL)//list not empty
+	{
+		if (p->size<=tempSize)
+		{
+			flag=1; 
+			break; 
+		}
+		q=p;
+		p=p->next;
+	}
+	if (flag==1) 
+	{
+		if (p==head && p==tail)//delete  one node 
+		{
+			head=NULL; 
+			tail=NULL; 
+		}
+		else  if (p==head)//delete head  
+			head=p->next; 
+		else if  (p==tail)//delete  tail 
+		{
+			tail=q; 
+			q->next=NULL;  
+		}
+		else //delete middle  
+			q->next=p->next; 
+		free(p); 
+	}
+}
+void list()
+{
+	NODE *p;
+	p=head;
+	printf("Name\tParty Size\n"); 
+
+	while (p!=NULL) 
+	{
+		printf("%s\t%d\n", p->name, p->size);
+		p=p->next; 
+	}
+}
+int check_duplicate(char *Gname)
+{
+	NODE *p; 
+	p=head; 
+	while (p!=NULL)
+	{
+		if  (strcmp(Gname, p->name)==0)
+		{
+			printf("This name is already on the list.\n");
+			return 0;
+		}
+		p= p->next;
+	}
+	return 1;
+}
+void search_size()
+{
+	int tempNum; 
+	NODE  *p; 
+	p=head;	
+	int flag=0; 
+
+	printf("Party size:"); 
+	scanf("%d", &tempNum); 
+	
+	while (p!=NULL)
+	{
+		if (p->size <=tempNum)
+		{
+			printf("%s, party size of %d\n", p->name, p->size);
+			flag=1;
+		}
+		p=p->next;
+	}
+	if (flag ==0)
+	{
+		printf("There is no one with that size party or less\n");
+	}	
+	return;
+}
+
