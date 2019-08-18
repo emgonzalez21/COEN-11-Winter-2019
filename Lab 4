@@ -1,0 +1,245 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h> 
+
+#define SIZE 10
+#define LENGTH 20
+void insert(); 
+void removef (); 
+void list (); 
+void search_size();
+int check_duplicate(char *Gname);
+int counter=0; 
+
+union occasion
+{
+	char name[LENGTH];
+	int years; 
+	float age;
+};
+struct party
+{
+	char name[SIZE];
+	int size;
+	int flag; 
+	union occasion event;
+};
+struct party plist[SIZE];
+int main (void) 
+{
+	int input;
+	while (1) 
+	{
+		printf("Welcome to Martha's Kitchen\n");
+		printf("1:Add name to waiting list\n2:Opening\n3:Show waiting list\n4:Show size\n0:Quit\n");
+		scanf("%d", &input); 
+		switch (input) 
+		{
+		
+			case 1://add name to waiting list
+				insert ();
+				break;	
+			case 2: //Open table available 
+				removef (); 
+				break;	
+			case 3://show the waiting list
+				list ();
+				break;
+			case 4://show size
+				search_size();
+				break;				
+			case 0: //quit	
+				return (0);							
+				break;	
+			default: 
+				printf("Invalid input, try entering a valid option\n");	
+		}
+	
+	}		
+}
+void insert () 
+{	  
+	int i;
+	char tempoName[LENGTH];
+	int tempSize;
+	int userI;
+	char tempoBday[LENGTH]; 
+	int tempYears; 
+	float tempAge;
+
+	if (counter==SIZE)
+	{		
+		printf("Waiting list is full \n");
+		return;
+	}
+	  											
+	if (counter<SIZE)
+	{	
+		printf("Enter name:");
+		scanf("%s", tempoName);
+		printf("Size of party:");
+		scanf("%d", &tempSize);
+		printf("Special occasion:\n");
+	 	printf("1: Birthday\n2: Anniversary\n3:No special occasion\n");
+		scanf("%d", &userI);
+		if (userI==1)
+		{
+			printf("Name:");
+			scanf("%s",tempoBday);
+		}
+		if (userI==2)				
+		{
+			printf("Years together:"); 
+			scanf("%d",&tempYears); 
+		}
+		if (userI==3)
+		{
+			printf("Average age:");
+			scanf("%f",&tempAge);
+		}
+	}
+	if (check_duplicate(tempoName)==1)
+	{
+		printf("%s, party of %d you are now on the waiting list\n", tempoName,tempSize);
+		strcpy(plist[counter].name, tempoName);
+		plist[counter].size=tempSize;
+		
+		if (userI==1)
+		{
+			strcpy(plist[counter].event.name,tempoBday);
+			plist[counter].flag=1;
+		}
+		if (userI==2)
+		{
+			plist[counter].event.years= tempYears;
+			plist[counter].flag=2;
+		}
+		if (userI==3)
+		{
+			plist[counter].event.age= tempAge; 
+			plist[counter].flag=3;
+		}
+		counter++;
+	}		
+}
+
+void removef()	 
+{
+	int i,j;
+	int groupCounter=0; 
+	int tempSize; 
+	struct party*ptr;
+	ptr=plist;
+	struct party*ptr2;
+	ptr2=ptr+1;
+
+	if (counter==0)
+	{		
+		printf("No one is on the waiting list\n"); 	
+	}
+	else 
+	{
+		printf("Available table for party size of:"); 
+		scanf("%d", &tempSize);
+		for (i=0;i<counter;i++,ptr++, ptr2++)
+		{
+			if (ptr->size<=tempSize)
+			{
+				printf("%s, you are now ready to be seated.\n", ptr->name);
+				for (j=i; j<counter-1;j++,ptr++,ptr2++)
+				{
+					*ptr=*ptr2;
+				}	
+				counter--;
+				return; 
+			}
+		}
+	}
+}
+void list()
+{
+	int i;
+	struct party *ptr;
+	ptr=plist;
+	if(counter==0)
+	{
+		printf("No one is on the waiting list\n");
+	}
+	else
+	{
+		for (i=0;i<counter;i++,ptr++)
+		{
+			{
+				printf("%s, party of %d\n", ptr->name, ptr->size);
+
+				if (plist[i].flag==1)
+				{
+					printf("%s\n",plist[i].event.name);
+				}
+				if (plist[i].flag==2)
+				{
+					printf("%d\n",plist[i].event.years);
+				}
+				if (plist[i].flag==3)
+				{
+					printf("%f\n",plist[i].event.age);
+				}
+			}
+		}
+	}
+}
+int check_duplicate(char *Gname)
+{
+	int j;
+	struct party *ptr; 
+   	ptr= plist; 
+
+	for (j=0; j<counter; j++, ptr++)
+	{
+		if (strcmp(Gname,ptr->name)==0)
+		{	
+			printf("This name is already on the list.\n");
+			return 0;
+		}
+	}
+	return 1;
+}
+void search_size()
+{
+	int i; 
+	int tempNum; 
+	int flag=0;
+   	struct party *ptr; 
+	ptr=plist; 
+
+	printf("Party size:"); 
+	scanf("%d", &tempNum); 
+	
+	for (i=0; i<counter; i++, ptr++)
+	{
+		if (tempNum >= ptr->size)
+		{
+			printf("%s, party size of %d\n", ptr->name, ptr->size);
+			flag=1;
+			if (plist[i].flag==1)
+			{   
+				printf("%s\n",plist[i].event.name);
+			}
+			if (plist[i].flag==2)
+			{   
+				printf("%d\n",plist[i].event.years);
+			}
+			if (plist[i].flag==3)
+			{   
+				printf("%f\n",plist[i].event.age);
+			}
+
+		}
+	}
+	if (flag ==0)
+	{
+		printf("There is no one with that size party or less\n");
+	}	
+	return;
+}
+
